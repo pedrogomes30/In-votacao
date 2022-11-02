@@ -13,7 +13,7 @@
     * nestjs;
     * authenticação em JWT + acesso com conta google;
         
-   * front-end:
+   front-end:
     * Vuejs;
     * NuxtJs;
     
@@ -28,4 +28,6 @@
     * heroku ou digital ocean;
     
 <h3>Planejamento</h3>
+  
+abaixo segue o planejamento do banco no mongooDB.
 
