@@ -1,0 +1,58 @@
+version: "4.12"
+
+volumes:
+  db_volume:
+    driver: local
+  nodemodules: {}
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    env_file:
+      - .env
+    container_name: ${APP_NAME}-db
+    ports:
+      - ${dB_PORT}:${DB_PORT}
+    volumes:
+      - db_volume:/data/db
+      # - ./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh
+    environment:
+      MONGO_INITDB_DATABASE: ${DB_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+
+  api:
+    build: /api
+    restart: always
+    env_file:
+      - .env
+    container_name: ${APP_NAME}-api
+    ports:
+      - '${APP_PORT}:${APP_PORT}'
+    command: npm start
+    
+    volumes:
+      - ./api:/api
+      - nodemodules:/api/node_modules
+    environment:
+      # API
+      APP_URL: ${APP_URL}
+      APP_NAME: ${APP_NAME}
+      APP_PORT: ${APP_PORT}
+      APP_ENV: ${APP_ENV}
+      APP_VERSION: ${APP_VERSION}
+      APP_TIMEZONE: ${APP_TIMEZONE}
+      # DB
+      DB_HOSTNAME: ${DB_HOSTNAME}
+      DB_PORT: ${DB_PORT}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+    depends_on:
+      - mongo
+    links:
+      - mongo
+   
+
+
